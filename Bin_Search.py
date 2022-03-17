@@ -1,133 +1,60 @@
 
 
-from __future__ import annotations
-from typing import Any, Type
-import hashlib
-
-class Node :
+def bin_search(lis, key) :
     
+    n = len(lis)
     
-    def __init__(self, key : Any, value: Any, next: Node) -> None :
-        
-        self.key = key
-        self.value = value
-        self.next = next
-        
-
-class ChainedHash:
+    pl = 0
+    pr = n-1
     
-    
-    def __init__(self, capacity: int) -> None:
+    while True :
         
-        self.capacity = capacity 
-        self.table = [None] * self.capacity
+        pc = (pl+pr)//2
         
-    def hash_value(self, key: Any) -> int :
-        
-        if isinstance(key, int) :
-            return key % self.capacity
-        return(int(hashlib.sha256(str(key).encode()).hexdigest(),16) % self.capacity)
-    
-    def search(self, key: Any) -> Any:
-        
-        hash = self.hash_value(key)
-        p = self.table[hash]
-        
-        while p is not None :
-            if p.key == key :
-                return p.value()
-            p = p.next
+        if lis[pc] < key : 
             
-        return None
-    
-    def add(self, key: Any, value: Any) -> bool:
-        
-        hash = self.hash_value(key)
-        p = self.table[hash]
-        
-        while p is not None :
-            if p.key == key :
-                return False
-            p = p.next
+            pl = pc + 1
             
-            temp = Node(key, value, self.table[hash])
-            self.table[hash] = temp
-            return True
-        
-    def remove(self, key:Any) ->bool :
-        
-        hash = self.hash_value(key)
-        p = self.table[hash]
-        pp = None
-        
-        while p is not None :
-            if p.key == key :
-                if pp is None :
-                    self.table[hash] = p.next
-                
-                else:
-                    pp.next = p.next
-                return True 
-            pp=p
-            p=p.next
-        return False 
-    
-    def dump(self) ->None :
-        
-        for i in range(self.capacity):
-            p = self.table[i]
-            print(i, end='')
-            while p is not None :
-                print(f' -> {p.key} ({p.value})', end = '')
-                p = p.next
-                
-            print()
+        elif lis[pc] > key :
             
+            pr = pc - 1
             
-from enum import Enum
+        else :
+            
+            return pc
+        
+        if pl > pr :
+            
+            return -1 
+        
 
-Menu = Enum('Menu', ['추가', '삭제','검색','덤프','종료'])
-
-def select_menu() -> Menu :
+if __name__ == '__main__' :
     
-    s = [f'({m.value}){m.name}' for m in Menu]
-    while True:
-        print(*s, sep='  ', end='')
-        n = int(input(': '))
-        if 1 <= n <=len(Menu):
-            return(Menu(n))
+    
+    num = int(input('원소 수를 입력하세요. :'))
+    
+    x = [None] * num
+    
+    print("배열 데이터를 오른차순으로 입력하세요.")
+    
+    x[0]= int(input('x[0]: '))
+    
+    for i in range(1, num) :
+        while True :
+            x[i] = int(input(f'x[{i}]: '))
+            if x[i] >= x[i-1] :
+                break
+    ky = int(input('검색할 키 값을 입력하세요.: '))
+    
+    idx = bin_search(x,ky)
+    
+    if idx==-1 :
+        print('검색 원소가 존재하지 않습니다.')
         
-hash = ChainedHash(13)
-
-while True :
-    menu = select_menu()
-    
-    if menu == Menu.추가:
-        key = int(input('추가할 키를 입력하세요.: '))
-        val = input('추가할 값을 입력하세요.: ')
-        if not hash.add(key, val):
-            print('추가를 실패했습니다!')
+    else : 
+        print(f'검색할 값은 x[{idx}]에 있습니다.')
             
-    elif menu == Menu.삭제 :
-        key = int(input('삭제할 키를 입력하세요.: '))
-        if not hash.remove(key):
-            print('삭제를 실패했습니다!')
-            
-    elif menu == Menu.검색:
-        key = int(input('검색할 키를 입력하세요.: '))
-        t = hash.search(key)
-        
-        if t is not None :
-            print(f'검색한 키를 갖는 값은 {t}입니다.')
-        else : print('검색할 데이터가 없습니다.')
-        
-    elif menu == Menu.덤프:
-        hash.dump()
-        
-    else:
-        break
-                
-                
-                
     
-
+    
+    
+    
