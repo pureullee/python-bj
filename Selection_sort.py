@@ -1,25 +1,29 @@
-#23881
-import sys 
+import sys
 
-result_list = []
-
-n, k = map(int,input().split())
+n, k = map(int, input().split())
 data = list(map(int, sys.stdin.readline().split()))
 count = 0
-while True :
-    Max = max(data[0:n-count])
-    i = data.index(Max)
-    if data[-1-count] != Max :
-        data[i] = data[-1-count]
-        data[-1-count] = Max
-        result_list.append([data[i],Max])
-    count += 1
-    if count >= n-1 : break
+j=0
 
-if len(result_list) < k :
-    print(-1)
-else :
-    print(result_list[k-1][0], result_list[k-1][1])
+while count < k :
+    max_idx = 0
+    if n-j == 1 : 
+        print(-1)
+        break
+    for i in range(1,n-j):
+       if data[i] > data[max_idx] :
+           max_idx = i
+    
+    if max_idx != n-1-j :
+        data[max_idx], data[n-1-j] = data[n-1-j], data[max_idx]
+        count += 1
+    if count == k :
+        print(data[max_idx], data[n-1-count])
+    
+    j+=1 # while 구문이 몇바퀴 도는지 체크 
+#머가 문제지..
+
+        
     
 
 
