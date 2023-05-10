@@ -42,6 +42,50 @@ def insertSort(A : list, start : int , end : int) :
     A[loc+1] = value # insert 
     
     if start + 1 < end : insertSort(A, start+1, end)
+               
+        
+def mergeSort(A : list, start, end) :
+    if end - start >= 1 : 
+        pc = (start+end)//2
+        mergeSort(A,start,pc)
+        mergeSort(A,pc+1,end)
+        merge(A,start,pc,end)
+        
+def merge(A,start,pc,end) :
+    tmp = [None for x in range(end-start+1)]
+    li = start
+    ri = pc+1
+    idx = 0
+    while li<=pc and ri<=end :
+        if A[li] < A[ri] : 
+            tmp[idx] = A[li]
+            li+=1
+        else : 
+            tmp[idx] = A[ri]
+            ri+=1
+        idx+=1
+    if ri>end :
+        for i in range(li,pc+1) :
+            tmp[idx] = A[i]
+            idx+=1
+            
+            
+    elif li>pc :
+        for i in range(ri,end+1):
+            tmp[idx] = A[i]
+            idx+=1
+            
+    idx = 0 
+    for i in range(start,end+1) :
+        A[i] = tmp[idx]
+        idx+=1
+        
+    
+            
+    
+                     
+    
+
     
 def compareSort(*args) : # args[0]은 args[1]에 쓰일 함수에 대해 각 시행에 대한 runtime이 들어감. args[1]은 정렬 함수. args[2:]는 정렬 함수에 대한 정렬 리스트를 제외한 매개변수
     for i in range(1000) :
@@ -52,7 +96,8 @@ def compareSort(*args) : # args[0]은 args[1]에 쓰일 함수에 대해 각 시
         end = time.time()
         args[0].append((end-start)) # args[0] = save run time data 
         ls = [] # clear
-        
+
+
 
 
 
@@ -74,31 +119,19 @@ def run() :
     df['insertSort'] = s
     s = []
     print('완료')
-
+    
+    compareSort(s,mergeSort,0,sortSize-1)
+    df['mergeSort'] = s
+    s = []
+    print('완료')
     df.plot(kind='box')
 
     plt.show()
 
 
-run()
+ls = [random.randint(0,100) for x in range(100)]
+ps = ls.copy()
+ps.sort()
+mergeSort(ls,0,len(ls)-1)
 
-    
-
-
-  
-
-
-    
-
-
-    
-
-    
-
-        
-    
-    
-    
-            
-            
-    
+if ps == ls : print("good")
