@@ -80,7 +80,29 @@ def merge(A,start,pc,end) :
         A[i] = tmp[idx]
         idx+=1
         
-    
+def quickSort(A : list, p, r) :
+    if p < r :
+        pivotIndex = partition(A, p, r)
+        quickSort(A, p, pivotIndex-1)
+        quickSort(A, pivotIndex+1, r)
+        
+def partition(A : list, p, r) :
+    pivot = A[r]
+    i = p
+    j = r-1
+    while i<=j :
+        if A[i] > pivot :
+            if A[j] <= pivot :
+                A[i], A[j] = A[j], A[i]
+                j -=1
+                i +=1
+            else : 
+                j -=1
+        else :
+            i += 1
+    A[r], A[j+1] = A[j+1], A[r]
+    return j+1
+               
             
     
                      
@@ -124,14 +146,15 @@ def run() :
     df['mergeSort'] = s
     s = []
     print('완료')
-    df.plot(kind='box')
-
+    
+    compareSort(s,quickSort,0,sortSize-1 )
+    df['quickSort'] = s
+    s = []
+    print("완료")
+    
+    
+    df.plot(kind='box')  
     plt.show()
 
+run()
 
-ls = [random.randint(0,100) for x in range(100)]
-ps = ls.copy()
-ps.sort()
-mergeSort(ls,0,len(ls)-1)
-
-if ps == ls : print("good")
