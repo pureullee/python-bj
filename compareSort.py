@@ -102,6 +102,29 @@ def partition(A : list, p, r) :
             i += 1
     A[r], A[j+1] = A[j+1], A[r]
     return j+1
+
+def percolateDown(A : list, k:int, end:int) : # repair heap
+    child = 2*k+1 # left 
+    right = 2*k+2 # right
+    if child <= end : 
+        if right <= end and A[child] < A[right] :
+            child = right # select a large value between A[child] A[right]
+        if A[k] < A[child] :
+            A[k], A[child] = A[child], A[k] # change parent, child
+            percolateDown(A, child, end) 
+            
+def buildHeap(A) :
+    for i in range((len(A)-2) // 2, -1,-1): # First parent ~ last parent
+        percolateDown(A,i,len(A)-1)
+        
+def heapSort(A) :
+    buildHeap(A)
+    for last in range(len(A)-1,0,-1) : 
+        A[last], A[0] = A[0], A[last] # A[0],the biggest value, save in A[last] 
+        percolateDown(A,0,last-1) # except A[last], 0~last-1 heap
+        
+def 
+        
                
             
     
@@ -152,9 +175,14 @@ def run() :
     s = []
     print("완료")
     
+    compareSort(s,heapSort)
+    df['heapSort'] = s
+    s = []
+    print("완료")
     
     df.plot(kind='box')  
     plt.show()
 
-run()
+
+
 
