@@ -42,66 +42,71 @@ def insertSort(A : list, start : int , end : int) :
     A[loc+1] = value # insert 
     
     if start + 1 < end : insertSort(A, start+1, end)
-               
+        
         
 def mergeSort(A : list, start, end) :
     if end - start >= 1 : 
-        pc = (start+end)//2
-        mergeSort(A,start,pc)
-        mergeSort(A,pc+1,end)
-        merge(A,start,pc,end)
+        pc = (start+end)//2 #center
+        mergeSort(A,start,pc) #start~pc-1
+        mergeSort(A,pc+1,end) #pc ~ end-1
+        merge(A,start,pc,end)  
         
 def merge(A,start,pc,end) :
-    tmp = [None for x in range(end-start+1)]
-    li = start
-    ri = pc+1
+    tmp = [None for x in range(end-start+1)] #tmp list'size
+    li = start #left index 
+    ri = pc+1 #right index
     idx = 0
-    while li<=pc and ri<=end :
-        if A[li] < A[ri] : 
-            tmp[idx] = A[li]
-            li+=1
+    while li<=pc and ri<=end : #end = len(A)
+        if A[li] < A[ri] : #A[li....] / A[ri....]
+            tmp[idx] = A[li] #tmp[A[li......]]
+            li+=1 #A[li, li+1....]
         else : 
-            tmp[idx] = A[ri]
-            ri+=1
+            tmp[idx] = A[ri] #tmp[A[ri].....]
+            ri+=1#A[ri, ri+1...] index
         idx+=1
-    if ri>end :
+    if ri>end : #left list remain
         for i in range(li,pc+1) :
-            tmp[idx] = A[i]
+            tmp[idx] = A[i] #merge
             idx+=1
             
             
-    elif li>pc :
+    elif li>pc : #right list remain
         for i in range(ri,end+1):
-            tmp[idx] = A[i]
+            tmp[idx] = A[i] #merge
             idx+=1
             
     idx = 0 
     for i in range(start,end+1) :
-        A[i] = tmp[idx]
+        A[i] = tmp[idx] #tmp's value -> A
         idx+=1
         
+
+  
+
+        
 def quickSort(A : list, p, r) :
-    if p < r :
-        pivotIndex = partition(A, p, r)
+    if p < r : # piovtindex's value is sorted
+        pivotIndex = partitionUp(A, p, r)  
         quickSort(A, p, pivotIndex-1)
         quickSort(A, pivotIndex+1, r)
         
-def partition(A : list, p, r) :
-    pivot = A[r]
+        
+def partitionUp(A : list, p, r) :
+    pivot = A[r] # last index's value is pivot 
     i = p
     j = r-1
     while i<=j :
-        if A[i] > pivot :
-            if A[j] <= pivot :
+        if A[i] > pivot : #if value of left section  > piovt  
+            if A[j] <= pivot : # if and value of right section <= pivot  ---> trade
                 A[i], A[j] = A[j], A[i]
                 j -=1
                 i +=1
-            else : 
+            else : # A[i], A[j] > pivot 
                 j -=1
         else :
-            i += 1
-    A[r], A[j+1] = A[j+1], A[r]
-    return j+1
+            i += 1 
+    A[r], A[j+1] = A[j+1], A[r] # value of first right section trade A[r]
+    return j+1 #pivotindex
 
 def percolateDown(A : list, k:int, end:int) : # repair heap
     child = 2*k+1 # left 
@@ -123,7 +128,31 @@ def heapSort(A) :
         A[last], A[0] = A[0], A[last] # A[0],the biggest value, save in A[last] 
         percolateDown(A,0,last-1) # except A[last], 0~last-1 heap
         
-def 
+def shellSort(A) :
+    H = gapSequence(len(A)) #gap list   
+    for h in H : # for example h = 13,4,1
+        for k in range(h) : 
+            stepInsertionSort(A,k,h)
+
+def gapSequence(n:int): # make gapSequence , n = len(A)
+    H=[1]
+    gap = 1
+    while gap <n/5:
+        gap = 3*gap +1
+        H.append(gap)
+    H.reverse()
+    return H
+    
+def stepInsertionSort(A,k,h):# sort A[k, k+h, k+2h ...] k=start, h=step gap
+    for i in range(k+h, len(A),h): # k : start, h : gap
+        j = i-h #k+h-h = k 
+        newItem = A[i] #newItem's index k+h
+        while 0 <= j and newItem < A[j] : #  first element's j = k, second element's j =  k+h
+            A[j+h] = A[j]  #j+h = i, 
+            j -= h #break condition
+        A[j+h] = newItem #newItem's value is sorted
+
+
         
                
             
@@ -141,8 +170,6 @@ def compareSort(*args) : # args[0]은 args[1]에 쓰일 함수에 대해 각 시
         end = time.time()
         args[0].append((end-start)) # args[0] = save run time data 
         ls = [] # clear
-
-
 
 
 
@@ -180,9 +207,19 @@ def run() :
     s = []
     print("완료")
     
+    compareSort(s,shellSort)
+    df['shellSort'] = s
+    s=[]
+    print("완료")
+    
+    
+    
+    
+    print(df.mean())
+    
     df.plot(kind='box')  
+    plt.title('Sort Time Comparison as box')
     plt.show()
 
 
-
-
+run()
